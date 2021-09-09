@@ -7,9 +7,21 @@ const port = 3000
 
 app.use(express.static('public'))
 
-http.listen(port, ()=>{console.log('listen port' + port)})
 
-io.on('', (socket) => {
-
+io.on('connection', (socket) => {
+    console.log('new connection')
+    
+    
+    socket.on("message", (incoming) => {
+        console.log(incoming)
+       io.emit('message', incoming)
+        
+    })
+    
+    
     
 })
+
+
+
+http.listen(port, () => console.log('listen port ' + port) )
