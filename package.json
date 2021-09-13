@@ -1,25 +1,16 @@
 {
-  "name": "mirc_chat",
+  "name": "mirc-4",
   "version": "1.0.0",
-  "description": "mIRQ chat clone",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Kanan11/mIRC_chat.git"
-  },
-  "author": "Kanan & Ryan",
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Kanan11/mIRC_chat/issues"
-  },
-  "homepage": "https://github.com/Kanan11/mIRC_chat#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "nodemon": "^2.0.12",
     "socket.io": "^4.2.0"
   }
 }

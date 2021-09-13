@@ -2,23 +2,163 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+
+	<meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mIRQ chat</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./logic.js"></script>
-    <link rel="stylesheet" href="style.css">
+	<!-- <script defer src="./logic.js"></script> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+
+	<script
+	src="https://code.jquery.com/jquery-3.4.1.min.js"
+	integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+	crossorigin="anonymous"></script>
+
+
+
+
+	<title>mIRC clone</title>
+	<style>
+		body {
+			background: #fcfcfc;
+		}
+	</style>
 </head>
 
 <body>
-    <ul id="messages">
-        
-    </ul>
-    <div class="inputContainer">
-        <input id="message" autocomplete="off" type="text" />
-        <button onclick="sendMessage()">SEND</button>
-    </div>
+	<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+		<h5 class="my-0 mr-md-auto">mIRC clone</h5>
+		<nav class="my-2 my-md-0 mr-md-3">
+			<a class="p-2 text-dark" href="/">Home</a>
+			<a class="p-2 text-dark" href="#">About us</a>
+
+		</nav>
+		<a class="btn btn-outline-primary" href="#">Sign IN</a>
+	</div>
+	<!-- huvud container -->
+	<div class="container">
+		<div class="py-5 text-center">
+			<h2>Inlämning TVÅ</h2>
+			<p class="lead">Lets get start it</p>
+		</div>
+		<div class="row">
+			<div class="col-6">
+				<h3>Meddelandeformulär</h3>
+				<form id="messForm">
+					<label for="name">Namn</label>
+					<input type="text" name="name" id="name" placeholder="Vad heter du?" class="form-control">
+					<br>
+					<label for="message">Meddelande</label>
+					<textarea name="message" id="message" class="form-control" placeholder="Här din text"></textarea>
+					<br>
+					<input type="submit" value="SKICKA" class="btn btn-danger">
+					<br>
+					
+				</form>
+			</div>
+			<div class="col-6">
+				<h3>Meddelande</h3>
+				<!-- Här kan se alla meddelande -->
+				<div id="all_mess"></div>
+			</div>
+		</div>
+	</div>
+	<script>
+		// I varie användare kommer att ha eget random farg
+		var min = 1;
+		var max = 6;
+		var random = Math.floor(Math.random() * (max - min)) + min;
+
+		// Jag använder classer av Bootstrap
+		var alertClass;
+		switch (random) {
+			case 1:
+				alertClass = 'secondary';
+				break;
+			case 2:
+				alertClass = 'danger';
+				break;
+			case 3:
+				alertClass = 'success';
+				break;
+			case 4:
+				alertClass = 'warning';
+				break;
+			case 5:
+				alertClass = 'info';
+				break;
+			case 6:
+				alertClass = 'light';
+				break;
+		}
+
+		// Huvud func
+		$(function () {
+			// Här vi jobbar med Socket.io
+			var socket = io.connect();
+			// skaffa variabler
+			var $form = $("#messForm");
+			var $name = $("#name");
+			var $textarea = $("#message");
+			var $all_messages = $("#all_mess"); // separat area för alla meddelande
+			var typing = false;
+			var timeout = undefined;
+			var $user = $("#name");
+
+			// Det knap lysnar event
+			$form.submit(function (event) {
+				// det är liten "life/hack" att stoppa omstart sidan
+				event.preventDefault();
+				// I socket vi skickar ny meddelande 'send mess',
+				// och skickar vår variabler
+				socket.emit('send mess', { mess: $textarea.val(), name: $name.val(), className: alertClass });
+				// tomma area
+				$textarea.val('');
+
+				if (event.which != 13) {
+					console.log('banan')
+					typing = true
+					socket.emit('typing', { user: name, typing: true })
+					clearTimeout(timeout)
+					timeout = setTimeout(typingTimeout, 3000)
+				} else {
+					clearTimeout(timeout)
+					typingTimeout()
+					//sendMessage() function will be called once the user hits enter
+					sendMessage()
+				}
+				function typingTimeout(){ typing=false 
+					socket.emit('typing', {name:name, typing:false}) }
+console.log('typingTimeout')
+
+				//code explained later
+				socket.on('display', (data) => {
+					if (data.typing == true)
+						$('.typing').text(`${data.user} is typing...`)
+					else
+						$('.typing').text("")
+				})
+			});
+
+			// Här vi avvaktar 'add mess', 
+			// att lägga till ny meddelande från ny connection
+			socket.on('add mess', function (data) {
+				// infåga ny meddelande till gemensamma blok
+				// han kan se bara sista srivande meddelandena jQuery
+				$all_messages.append("<div class='alert alert-" + data.className + "'><b>" + data.name + "</b>: " + data.mess + "</div>");
+			});
+
+
+
+
+
+
+
+		});
+	</script>
+
 </body>
 
 </html>
