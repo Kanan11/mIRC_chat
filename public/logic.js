@@ -58,45 +58,59 @@
             // infåga ny meddelande till gemensamma blok
             // han kan se bara sista srivande meddelandena jQuery
             $all_messages.append("<div class='alert alert-" + data.className + "'><b>" + data.name + "</b>: " + data.mess + "</div>");
-        });
-
-
-        $('#message').keypress((event) => {
-                console.log('...')
-                if ($("#message").attr("placeholder")) {
-                    if (event.which != 11) {
-                        console.log('IF')
-                        typing = true
-                        socket.emit('typing', { message: message, typing: true })
-                        clearTimeout(timeout)
-                        timeout = setTimeout(typingTimeout, 2000)
-                        
-                    } else {
-                        console.log('ELSE')
-                        clearTimeout(timeout)
-                        typingTimeout()
-                        submit()
-                    }
-                }
-            })
-
+            var namnet = data.name
             socket.on('display', (data) => {
+                //console.log(data.name)
                 if (data.typing == true)
-                    $('.typing').text(`${data.message} is typing...`)
+                //console.log(namnet),
+                $('.typing').text(`${namnet} is typing...`)
+                
                 else
-                    $('.typing').text("")
-            })
-
-
-            function typingTimeout() {
-                typing = false
-                socket.emit('typing', { message: message, typing: false })
-                console.log('typingTimeout')
+                        $('.typing').text("")
+                    })
+       
+       
+       
+                });
+        
+        $('#message').keypress((event) => {
+            console.log('...')
+            if ($("#message").attr("placeholder")) {
+                if (event.which != 11) {
+                    //console.log('IF')
+                    typing = true
+                    socket.emit('typing', { message: message, typing: true })
+                    clearTimeout(timeout)
+                    timeout = setTimeout(typingTimeout, 1000)
+                    
+                } else {
+                    console.log('ELSE')
+                    clearTimeout(timeout)
+                    typingTimeout()
+                    submit()
+                }
             }
-
-
-
-
-
-
-    });
+        })
+        
+        
+                
+                
+                function typingTimeout() {
+                    typing = false
+                    socket.emit('typing', { message: message, typing: false })
+                    //console.log('typingTimeout')
+                }
+                
+                
+                
+                
+                
+                
+            });
+            //---------------TEST------------------
+            var socket = io.connect('http://localhost:3037');
+            
+            socket.on('message', function(message) {
+                console.log('The server has a message for you: ' + message);
+            })
+            //---------------TEST------------------

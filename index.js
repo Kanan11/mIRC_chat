@@ -12,6 +12,15 @@ connections = [];
 
 io.sockets.on('connection', function(socket) {
 	console.log("Connected");
+	
+	
+//---------------TEST------------------
+io.sockets.on('connection', function (socket) {
+	socket.emit('message', 'You are connected!' + socket.id);
+});
+//---------------TEST------------------
+
+
 	// lägga till ny connection
 	socket.on('createUser', function(data) {
 		connections.push({id:socket.id, data:data.name, typing:false});
@@ -29,12 +38,11 @@ io.sockets.on('connection', function(socket) {
 	socket.on('send mess', function(data) {
 		// inne func vi skickar ny data 'add mess',
 		// det data ska synas i varie user 
-		io.sockets.emit('add mess', {id: data.id, mess: data.mess, name: data.name, className: data.className});
+		io.sockets.emit('add mess', {mess: data.mess, name: data.name, className: data.className});
 	});
 	
 	
 	socket.on('typing', (data)=>{
-		console.log("typing");
 		if(data.typing==true)
 		io.emit('display', data)
 		else
