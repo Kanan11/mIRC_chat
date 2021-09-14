@@ -49,7 +49,6 @@
             // tomma area
             $textarea.val('');
             
-            
         });
 
         // Här vi avvaktar 'add mess', 
@@ -68,9 +67,13 @@
                 else
                         $('.typing').text("")
                     })
-       
-       
-       
+                    
+                    const userName = data.name;
+                    if (userName) {
+                        socket.emit('new-user', userName)
+                    }else{
+                        location.reload();
+                    }
                 });
         
         $('#message').keypress((event) => {
@@ -92,20 +95,12 @@
             }
         })
         
-        
-                
-                
                 function typingTimeout() {
                     typing = false
                     socket.emit('typing', { message: message, typing: false })
                     //console.log('typingTimeout')
                 }
-                
-                
-                
-                
-                
-                
+
             });
             //---------------TEST------------------
             var socket = io.connect('http://localhost:3037');
@@ -114,3 +109,10 @@
                 console.log('The server has a message for you: ' + message);
             })
             //---------------TEST------------------
+
+            socket.on('user-connected', userName => {
+                const d = new Date();
+                $('.join').text(`${userName}`+' have connected ' + d.toDateString())
+                console.log(typeof `${userName}`)
+               
+            })
