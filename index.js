@@ -4,14 +4,25 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+io.on('connection', socket => {
+	socket.emit('chat-message', 'Hello World!')
+});
+
+const users = {}
+
 server.listen(3037);
-
-
 
 connections = [];
 
 io.sockets.on('connection', function(socket) {
 	console.log("Connected");
+
+// --------- Broadcast ------------
+socket.on("new-user", userName => {
+        users[socket.id] = userName
+        socket.broadcast.emit('user-connected', userName)
+        console.log(users)
+    })
 	
 	
 //---------------TEST------------------
