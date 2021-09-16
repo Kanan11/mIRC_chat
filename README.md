@@ -15,4 +15,5 @@ På vår klientsida har vi använt oss av Bootstrap och JQuery.
 Varje användare får en separat färg som hämtas ifrån Bootstrap.
 När någon lämnar chatten så ser man det i ett meddelande.
 När någon skriver ett meddelande så visas det "User is typing" under chatten.
-   
+
+i message input fältet om skriver "/" om man välja "/quote" då kan hämta API text 
