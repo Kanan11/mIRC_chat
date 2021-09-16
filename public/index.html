@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-
+    <link rel="stylesheet" href="/style.css">
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +21,7 @@
 	<title>mIRC clone</title>
 	<style>
 		body {
-			background: #fcfcfc;
+			background: #d1d0d0;
 		}
 	</style>
 </head>
@@ -50,9 +50,10 @@
 					<input type="text" name="name" id="name" placeholder="Vad heter du?" class="form-control">
 					<br>
 					<label for="message">Meddelande</label>
-					<textarea name="message" id="message" class="form-control" placeholder="Här din text"></textarea>
+					<div id='quote'>/quote</div>
+					<textarea name="message" oninput="check()" type="text" id="message" class="form-control" placeholder="Här din text"></textarea>
 					<br>
-					<input type="submit" value="SKICKA" class="btn btn-danger">
+					<input id="send" type="submit" value="SKICKA" class="btn btn-danger">
 					<br>
 					<div class="join"></div>
 					<div class="typing"></div>

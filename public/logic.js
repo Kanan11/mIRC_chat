@@ -29,7 +29,7 @@ switch (random) {
 }
 
 // Huvud func
-$(function () {
+ $(function () {
   // Här vi jobbar med Socket.io
   var socket = io.connect();
   // skaffa variabler
@@ -42,6 +42,8 @@ $(function () {
   var $message = $("#message");
 
   // Det knap lysnar event
+  
+
   $form.submit(function (event) {
     // det är liten "life/hack" att stoppa omstart sidan
     event.preventDefault();
@@ -55,7 +57,10 @@ $(function () {
     namnet = $name.val(); // Fixad
     // tomma area
     $textarea.val("");
+
   });
+
+
 
   // Här vi avvaktar 'add mess',
   // att lägga till ny meddelande från ny connection
@@ -83,7 +88,7 @@ $(function () {
     const userName = data.name;
     if (userName) {
       socket.emit("new-user", userName);
-      console.log(userName)
+      //console.log(userName)
     } else {
       null;
     }
@@ -125,13 +130,13 @@ $(function () {
         
       }
       const d = new Date();
-      $(".join").text(`${userName}` + " have connected " + d.toDateString());
+      $(".join").text(`${userName}` + " has connected " + d.toDateString());
      //console.log(typeof `${userName}`);
   });
   
   socket.on("user-disconnected", (userName) => {
     
-    $(".join").text(`${userName}` + " have left " );
+    $(".join").text(`${userName}` + " has left " );
     //console.log(typeof `${userName}`);
   });
   
@@ -139,3 +144,50 @@ $(function () {
   
   
 });
+
+
+function check() {
+
+  if (message.value == '/') {
+    const quote = document.getElementById('quote')
+    quote.style.display = 'block'
+    quote.onclick = function () {
+        const inputText = document.getElementById('message')
+        inputText.value = '/quote'
+        quote.style.display = 'none'
+      }
+  } else {
+      quote.style.display = 'none'
+  }
+};
+btn = document.getElementById('send'),
+btn.addEventListener('click', function(){
+    if(message.value == "/quote") {
+        async function command() {
+
+        const quoteList = await fetch("https://type.fit/api/quotes")
+        const oneQoute = await quoteList.json()
+    
+        var item = oneQoute[Math.floor(Math.random() * oneQoute.length)]; 
+
+        console.log(item.text),
+        console.log(namnet),
+        console.log(alertClass),
+        
+        //---------------------------- 
+        socket.emit("send mess", { mess: item.text, name: namnet, className: alertClass}); 
+        //---------------------------- 
+        
+        
+      }
+      command();
+      message.value = "";
+    } else {
+      
+      
+      
+    }
+  });
+  
+   
+  
