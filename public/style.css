@@ -1,0 +1,8 @@
+#quote {
+    display: none;
+    cursor: pointer;
+    background-color: #fff;
+    margin-top: 1px;
+    margin-bottom: 2px;
+    font-weight: bold;
+}
