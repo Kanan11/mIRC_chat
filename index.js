@@ -21,7 +21,6 @@ io.sockets.on("connection", function (socket) {
     //connections.forEach(element => console.log(element));
 
     socket.broadcast.emit("user-connected", name);
-
     //console.log(connections.valueOf(userName))
     //console.log(connections[0].userName)
     /* if(name === connections[0].userName){
