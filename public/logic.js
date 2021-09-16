@@ -71,7 +71,7 @@ $(function () {
         data.mess +
         "</div>"
     );
-    // ta ut rad 64 blocket
+
     socket.on("display", (data) => {
       //console.log(data.name)
       if (data.typing == true)
@@ -83,6 +83,7 @@ $(function () {
     const userName = data.name;
     if (userName) {
       socket.emit("new-user", userName);
+      console.log(userName)
     } else {
       null;
     }
@@ -104,7 +105,7 @@ $(function () {
         console.log("ELSE");
         clearTimeout(timeout);
         typingTimeout();
-        submit();
+        
       }
     }
   });
@@ -114,16 +115,27 @@ $(function () {
     socket.emit("typing", { name: namnet, typing: false });
     //console.log('typingTimeout')
   }
-});
-
-socket.on("user-connected", (userName) => {
-  const d = new Date();
-  $(".join").text(`${userName}` + " have connected " + d.toDateString());
-  console.log(typeof `${userName}`);
-});
-
-socket.on("user-disconnected", (userName) => {
-  const d = new Date();
-  $(".join").text(`${userName}` + " have left " + d.toDateString());
-  console.log(typeof `${userName}`);
+  
+  socket.on("user-connected", userName => {
+    if(typing){
+      console.log(typing)
+    }
+      else{
+        
+        
+      }
+      const d = new Date();
+      $(".join").text(`${userName}` + " have connected " + d.toDateString());
+     //console.log(typeof `${userName}`);
+  });
+  
+  socket.on("user-disconnected", (userName) => {
+    
+    $(".join").text(`${userName}` + " have left " );
+    //console.log(typeof `${userName}`);
+  });
+  
+  
+  
+  
 });

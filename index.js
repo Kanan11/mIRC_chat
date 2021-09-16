@@ -1,42 +1,51 @@
-const { create } = require("domain");
 var express = require("express");
 var app = express();
 var server = require("http").createServer(app);
 var io = require("socket.io")(server);
 
-io.on("connection", (socket) => {
-  socket.emit("chat-message", "Hello World!");
-});
-
-const users = {};
 
 server.listen(3037);
+app.use(express.static("public"));
 
+const users = {};
 connections = [];
 
 io.sockets.on("connection", function (socket) {
   console.log("Connected");
   let userName = null;
-  // --------- Broadcast - Ta emot data från klient och skicka till alla användare vem som anslutit ------------
+  // -------- Ta emot data från klient och skicka till alla användare vem som anslutit ------------
   socket.on("new-user", (name) => {
-    userName = name;
-    // users[socket.id] = userName;
-    socket.broadcast.emit("user-connected", userName);
-    //console.log(users);
-  });
+	  //userName = name;
+    connections.push({ id: socket.id, userName: name, typing: false }) 
+	  users[socket.id] = userName;
+    //connections.forEach(element => console.log(element));
+ 
+    socket.broadcast.emit("user-connected", name);
 
-  //---------------TEST------------------
-  io.sockets.on("connection", function (socket) {
-    socket.emit("message", "You are connected!" + socket.id);
-  });
-  //---------------TEST------------------
+   //console.log(connections.valueOf(userName))
+    //console.log(connections[0].userName)
+    /* if(name === connections[0].userName){
+      
+      console.log('bingo')
+    }else{
+    } */
+    /* connections.forEach((userName) => {
+      console.log(userName);
+    }); */
+    //console.log(users + " users1");
+	  //console.log(users, ' users2');
+	  
+    
+	  /* console.log(userName, ' userName');
+	  console.log(name, ' name'); */
+	  //console.log(connections, ' connections');
+	  //console.log(Object.keys(connections), connections[0].userName);
+	  //console.log(socket, ' socket');
+	});
 
-  // lägga till ny connection
-  socket.on("createUser", function (data) {
-    connections.push({ id: socket.id, data: data.name, typing: false });
-  });
+ 
+ 
   socket.on("disconnect", function (data) {
-    console.log(connections);
     io.sockets.emit("user-disconnected", userName);
     /* 		socket.broadcast.emit('user-connected', userName); */
     // Ta bort USER
@@ -49,7 +58,7 @@ io.sockets.on("connection", function (socket) {
   socket.on("send mess", function (data) {
     // inne func vi skickar ny data 'add mess',
     // det data ska synas i varie user
-    console.log(data.name);
+    //console.log('he is sending message now '+ data.name);
     io.sockets.emit("add mess", {
       mess: data.mess,
       name: userName,
@@ -59,9 +68,8 @@ io.sockets.on("connection", function (socket) {
 
   socket.on("typing", (data) => {
     userName = data.name;
-    console.log("ontyping", data);
+    //console.log("ontyping", data);
     io.emit("display", data);
   });
 });
 
-app.use(express.static("public"));
