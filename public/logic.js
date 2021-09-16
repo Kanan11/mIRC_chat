@@ -105,7 +105,7 @@ switch (random) {
         namnet = $name.val();
         socket.emit("typing", { name: namnet, typing: true });
         clearTimeout(timeout);
-        timeout = setTimeout(typingTimeout, 1000);
+        timeout = setTimeout(typingTimeout, 1500);
       } else {
         console.log("ELSE");
         clearTimeout(timeout);
@@ -122,16 +122,18 @@ switch (random) {
   }
   
   socket.on("user-connected", userName => {
-    if(typing){
-      console.log(typing)
+    if((userName === namnet) && typing){
+      console.log('oldUser')
+
+      $(".join").text("");
     }
       else{
         
         
+        const d = new Date();
+        $(".join").text(`${userName}` + " has connected " + d.toDateString());
+       //console.log(typeof `${userName}`);
       }
-      const d = new Date();
-      $(".join").text(`${userName}` + " has connected " + d.toDateString());
-     //console.log(typeof `${userName}`);
   });
   
   socket.on("user-disconnected", (userName) => {
@@ -142,6 +144,33 @@ switch (random) {
   
   
   
+  btn.addEventListener('click', function(){
+      if(message.value == "/quote") {
+          async function command() {
+  
+          const quoteList = await fetch("https://type.fit/api/quotes")
+          const oneQoute = await quoteList.json()
+      
+          var item = oneQoute[Math.floor(Math.random() * oneQoute.length)]; 
+  
+          console.log(item.text),
+          console.log(namnet),
+          console.log(alertClass),
+          
+          //---------------------------- 
+          socket.emit("send mess", { mess: item.text, name: namnet, className: alertClass}); 
+          //---------------------------- 
+          
+          
+        }
+        command();
+        message.value = "";
+      } else {
+        
+        
+        
+      }
+    });
   
 });
 
@@ -160,34 +189,7 @@ function check() {
       quote.style.display = 'none'
   }
 };
-btn = document.getElementById('send'),
-btn.addEventListener('click', function(){
-    if(message.value == "/quote") {
-        async function command() {
-
-        const quoteList = await fetch("https://type.fit/api/quotes")
-        const oneQoute = await quoteList.json()
-    
-        var item = oneQoute[Math.floor(Math.random() * oneQoute.length)]; 
-
-        console.log(item.text),
-        console.log(namnet),
-        console.log(alertClass),
-        
-        //---------------------------- 
-        socket.emit("send mess", { mess: item.text, name: namnet, className: alertClass}); 
-        //---------------------------- 
-        
-        
-      }
-      command();
-      message.value = "";
-    } else {
-      
-      
-      
-    }
-  });
+btn = document.getElementById('send')
   
    
   
