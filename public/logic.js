@@ -29,7 +29,7 @@ switch (random) {
 }
 
 // Huvud func
- $(function () {
+$(function () {
   // Här vi jobbar med Socket.io
   var socket = io.connect();
   // skaffa variabler
@@ -41,9 +41,7 @@ switch (random) {
   var timeout = undefined;
   var $message = $("#message");
 
-  // Det knap lysnar event
-  
-
+  // Det knap skickar event
   $form.submit(function (event) {
     // det är liten "life/hack" att stoppa omstart sidan
     event.preventDefault();
@@ -57,50 +55,52 @@ switch (random) {
     namnet = $name.val(); // Fixad
     // tomma area
     $textarea.val("");
-
   });
-
-
 
   // Här vi avvaktar 'add mess',
   // att lägga till ny meddelande från ny connection
   socket.on("add mess", function (data) {
     // infåga ny meddelande till gemensamma blok
     // han kan se bara sista srivande meddelandena jQuery
-    $all_messages.append(
-      "<div class='alert alert-" +
+    if (data.mess === "") {
+      return null
+    } else {
+
+      $all_messages.append(
+        "<div class='alert alert-" +
         data.className +
         "'><b>" +
         data.name +
         "</b>: " +
         data.mess +
         "</div>"
-    );
+      );
+    }
 
+    //ta mot info om nån skriver
     socket.on("display", (data) => {
-      //console.log(data.name)
       if (data.typing == true)
-        //console.log(namnet),
         $(".typing").text(`${data.name} is typing...`);
       else $(".typing").text("");
     });
 
+
     const userName = data.name;
     if (userName) {
       socket.emit("new-user", userName);
-      //console.log(userName)
     } else {
       null;
     }
   });
+
   $name.keypress((event) => {
     namnet = $name.val();
   });
+  //jQuery hälper oss
   $("#message").keypress((event) => {
     console.log("...");
     if ($("#message").attr("placeholder")) {
       if (event.which != 11) {
-        //console.log('IF')
         typing = true;
         namnet = $name.val();
         socket.emit("typing", { name: namnet, typing: true });
@@ -110,7 +110,7 @@ switch (random) {
         console.log("ELSE");
         clearTimeout(timeout);
         typingTimeout();
-        
+
       }
     }
   });
@@ -118,78 +118,69 @@ switch (random) {
   function typingTimeout() {
     typing = false;
     socket.emit("typing", { name: namnet, typing: false });
-    //console.log('typingTimeout')
   }
-  
+
   socket.on("user-connected", userName => {
-    if((userName === namnet) && typing){
+    if ((userName === namnet) && typing) {
       console.log('oldUser')
 
       $(".join").text("");
     }
-      else{
-        
-        
-        const d = new Date();
-        $(".join").text(`${userName}` + " has connected " + d.toDateString());
-       //console.log(typeof `${userName}`);
-      }
+    else {
+
+
+      const d = new Date();
+      $(".join").text(`${userName}` + " has connected " + d.toDateString());
+    }
   });
-  
+
   socket.on("user-disconnected", (userName) => {
-    
-    $(".join").text(`${userName}` + " has left " );
-    //console.log(typeof `${userName}`);
+    $(".join").text(`${userName}` + " has left ");
   });
-  
-  
-  
-  btn.addEventListener('click', function(){
-      if(message.value == "/quote") {
-          async function command() {
-  
-          const quoteList = await fetch("https://type.fit/api/quotes")
-          const oneQoute = await quoteList.json()
-      
-          var item = oneQoute[Math.floor(Math.random() * oneQoute.length)]; 
-  
-          console.log(item.text),
+
+
+  // det API func som integrerar med 3-part sys
+  btn.addEventListener('click', function () {
+    if (message.value == "/quote") {
+      async function command() {
+
+        const quoteList = await fetch("https://type.fit/api/quotes")
+        const oneQoute = await quoteList.json()
+
+        var item = oneQoute[Math.floor(Math.random() * oneQoute.length)];
+
+        console.log(item.text),
           console.log(namnet),
           console.log(alertClass),
-          
+
           //---------------------------- 
-          socket.emit("send mess", { mess: item.text, name: namnet, className: alertClass}); 
-          //---------------------------- 
-          
-          
-        }
-        command();
-        message.value = "";
-      } else {
-        
-        
-        
+          socket.emit("send mess", { mess: item.text, name: namnet, className: alertClass });
+        //---------------------------- 
+
+
       }
-    });
-  
+      command();
+      message.value = "";
+    } else {
+
+      //reserverade plats för GIF
+
+    }
+  });
+
 });
-
-
 function check() {
 
   if (message.value == '/') {
     const quote = document.getElementById('quote')
     quote.style.display = 'block'
     quote.onclick = function () {
-        const inputText = document.getElementById('message')
-        inputText.value = '/quote'
-        quote.style.display = 'none'
-      }
-  } else {
+      const inputText = document.getElementById('message')
+      inputText.value = '/quote'
       quote.style.display = 'none'
+    }
+  } else {
+    quote.style.display = 'none'
   }
 };
 btn = document.getElementById('send')
-  
-   
-  

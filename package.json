@@ -1,14 +1,14 @@
 {
-  "name": "mirc-4",
+  "name": "mirc_clone",
   "version": "1.0.0",
-  "description": "",
+  "description": "Project_arbetet_WIE20G_Medieinstitut_Göteborg",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js"
   },
-  "author": "",
+  "author": "Ryan-Phillips Cornelio & Kanan Garaisayev",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
